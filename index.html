@@ -1,0 +1,539 @@
+<!--
+  On-H Homepage (single-file build)
+  Customization notes:
+  1) Update brand colors in the `tailwind.config` script (`extend.colors`) and CSS variables in :root.
+  2) Change typography by replacing the Google Font link and `fontFamily.sans` in Tailwind config.
+-->
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="On-H offers premium medical newborn care plans: pediatric review, compounded diaper rash & eczema relief, and monthly delivery." />
+  <title>On-H | Medical Newborn Care Plan</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandTeal: '#14B8A6',
+            brandBlue: '#60A5FA',
+            brandNavy: '#0F172A',
+            brandBg: '#F8FAFC',
+            brandGreen: '#10B981'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 10px 24px rgba(15, 23, 42, 0.08)',
+            lift: '0 18px 35px rgba(15, 23, 42, 0.14)'
+          }
+        }
+      }
+    }
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+  <style>
+    :root {
+      --heading-track: -0.02em;
+    }
+    body { letter-spacing: -0.01em; }
+    .h1-size { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.05; }
+    .h2-size { font-size: clamp(1.9rem, 4vw, 2.25rem); line-height: 1.15; }
+    .h3-size { font-size: 1.5rem; line-height: 1.2; }
+    .body-lg { font-size: 1.125rem; line-height: 1.7; }
+    .heading-track { letter-spacing: var(--heading-track); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 700ms ease, transform 700ms ease;
+      will-change: transform, opacity;
+    }
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .float-dot {
+      position: absolute;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(96,165,250,0.35) 0%, rgba(20,184,166,0.08) 60%, rgba(255,255,255,0) 70%);
+      animation: drift linear infinite;
+      pointer-events: none;
+      filter: blur(0.3px);
+    }
+    @keyframes drift {
+      0% { transform: translateY(0) translateX(0) scale(1); }
+      50% { transform: translateY(-30px) translateX(10px) scale(1.07); }
+      100% { transform: translateY(-70px) translateX(-8px) scale(0.94); }
+    }
+
+    .draw-line {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      transition: stroke-dashoffset 1.4s ease;
+    }
+    .draw-line.active { stroke-dashoffset: 0; }
+
+    .hero-word {
+      display: inline-block;
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+      transition: transform 400ms ease, opacity 400ms ease;
+      will-change: transform, opacity;
+    }
+    .hero-word.in {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .hero-word:hover { transform: scale(1.1); }
+
+    .interactive-card,
+    .interactive-btn {
+      transition: transform 320ms ease, box-shadow 320ms ease, filter 320ms ease;
+    }
+    .interactive-card:hover,
+    .interactive-btn:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 18px 35px rgba(15,23,42,0.14);
+      filter: brightness(1.02);
+    }
+
+    .faq-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 420ms ease, opacity 420ms ease;
+      opacity: 0;
+    }
+    .faq-panel.open {
+      opacity: 1;
+    }
+
+    .parallax-layer {
+      transform: translateY(var(--parallax, 0px));
+      transition: transform 90ms linear;
+      will-change: transform;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+      .hero-word { opacity: 1; transform: none; }
+      .draw-line { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body class="bg-white text-brandNavy font-sans antialiased">
+
+  <!-- Header / Navbar -->
+  <header id="siteHeader" class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+    <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
+      <div id="navWrap" class="mt-4 flex items-center justify-between rounded-2xl border border-white/40 bg-white/70 px-4 py-3 shadow-soft backdrop-blur-md transition-all duration-500">
+        <a href="#" class="text-2xl font-extrabold heading-track">On-<span class="text-brandTeal">H</span></a>
+        <ul class="hidden items-center gap-7 text-[1.125rem] font-medium lg:flex">
+          <li><a class="hover:text-brandTeal transition-colors" href="#">Home</a></li>
+          <li><a class="hover:text-brandTeal transition-colors" href="#how">How It Works</a></li>
+          <li><a class="hover:text-brandTeal transition-colors" href="#plans">Our Plans</a></li>
+          <li><a class="hover:text-brandTeal transition-colors" href="#pediatricians">For Pediatricians</a></li>
+          <li><a class="hover:text-brandTeal transition-colors" href="#">Blog</a></li>
+          <li><a class="hover:text-brandTeal transition-colors" href="#">Login</a></li>
+        </ul>
+        <div class="hidden items-center gap-3 lg:flex">
+          <span aria-label="Ethiopia flag" class="inline-flex h-6 w-9 overflow-hidden rounded-sm border border-slate-300">
+            <span class="w-1/3 bg-[#078930]"></span><span class="w-1/3 bg-[#FCD116]"></span><span class="w-1/3 bg-[#DA121A]"></span>
+          </span>
+          <button class="interactive-btn rounded-xl bg-brandTeal px-5 py-3 text-[1.125rem] font-medium text-white shadow-soft hover:bg-teal-600">Start Your Care Plan</button>
+        </div>
+        <button id="menuBtn" class="lg:hidden rounded-lg border border-slate-200 p-2" aria-label="Open menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mobileMenu" class="max-h-0 overflow-hidden rounded-2xl bg-white px-4 shadow-soft transition-all duration-500 lg:hidden">
+        <ul class="space-y-2 py-4 text-lg font-medium">
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#">Home</a></li>
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#how">How It Works</a></li>
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#plans">Our Plans</a></li>
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#pediatricians">For Pediatricians</a></li>
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#">Blog</a></li>
+          <li><a class="block rounded p-2 hover:bg-slate-100" href="#">Login</a></li>
+          <li><button class="interactive-btn mt-2 w-full rounded-xl bg-brandTeal px-4 py-3 text-white">Start Your Care Plan</button></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative isolate min-h-screen overflow-hidden bg-gradient-to-b from-brandBg to-white pt-36">
+      <div class="parallax-layer absolute inset-0 -z-20 bg-[url('https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=1600&q=60')] bg-cover bg-center opacity-15"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-white/90 via-white/70 to-brandBg/50"></div>
+      <div id="particles" class="absolute inset-0 -z-0"></div>
+
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
+        <div class="reveal">
+          <p class="mb-4 inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-medium shadow-soft">
+            <span class="mr-2 h-2.5 w-2.5 rounded-full bg-brandGreen animate-pulse"></span>
+            Pediatric-first care for babies 0–12 months
+          </p>
+          <h1 id="heroHeadline" class="h1-size heading-track font-extrabold text-brandNavy"></h1>
+          <p class="mt-6 max-w-xl body-lg text-slate-700">Prescription-strength relief for diaper rash & eczema — reviewed by licensed pediatricians in 24 hours and compounded just for your baby.</p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <button class="interactive-btn rounded-2xl bg-brandTeal px-7 py-4 text-[1.125rem] font-medium text-white shadow-soft hover:bg-teal-600">Start Your 60-Second Quiz – Pre-order Now</button>
+          </div>
+          <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-slate-700 sm:gap-4">
+            <span class="inline-flex items-center gap-1"><span>🛡️</span>Licensed Pediatricians</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1"><span>🏥</span>FDA-Registered Pharmacies</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1"><span>✅</span>30-Day Money-Back</span>
+            <span>•</span>
+            <span class="inline-flex items-center gap-1"><span>🌍</span>Trusted in 18+ Countries</span>
+          </div>
+        </div>
+        <div class="reveal relative">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&w=900&q=60" alt="Happy baby receiving care" class="interactive-card w-full rounded-3xl object-cover shadow-soft">
+          <div class="absolute -bottom-6 -left-4 max-w-xs rounded-2xl bg-white p-4 shadow-soft">
+            <p class="font-semibold">24hr Pediatric Review</p>
+            <p class="text-sm text-slate-600">Upload a photo and symptoms, then receive a doctor-guided treatment plan.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Signals -->
+    <section class="reveal py-14">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <p class="mb-6 text-center text-sm font-semibold uppercase tracking-widest text-slate-500">Trusted Care Infrastructure</p>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">OpenLoop Health</div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">Empower Pharmacy</div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">HIPAA Secure</div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">Pediatric Network</div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">Global Fulfillment</div>
+          <div class="rounded-xl border border-slate-100 bg-slate-50 p-4 text-center text-sm font-semibold text-slate-500">Top Parent Choice</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="reveal bg-brandBg py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track text-center font-extrabold">How On-H Works</h2>
+        <p class="mx-auto mt-4 max-w-3xl text-center body-lg text-slate-600">A simple clinical workflow designed exclusively for newborn skin and feeding support.</p>
+
+        <div class="relative mt-14">
+          <svg class="pointer-events-none absolute left-0 top-1/2 hidden w-full -translate-y-1/2 lg:block" height="80" viewBox="0 0 1200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path id="flowLine" class="draw-line" d="M100 40 C 300 40, 300 40, 500 40 S 700 40, 900 40 S 1100 40, 1100 40" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <div class="grid gap-6 lg:grid-cols-3">
+            <article class="interactive-card rounded-3xl bg-white p-7 shadow-soft">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandTeal/10 font-bold text-brandTeal">1</span>
+              <h3 class="mt-4 h3-size heading-track font-bold">Take the Quiz</h3>
+              <p class="mt-3 text-slate-600">Upload baby photos, describe rash or eczema severity, and share feeding symptoms in under a minute.</p>
+            </article>
+            <article class="interactive-card rounded-3xl bg-white p-7 shadow-soft ring-2 ring-brandBlue/20">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandBlue/15 font-bold text-brandBlue animate-pulse">2</span>
+              <h3 class="mt-4 h3-size heading-track font-bold">Doctor Review (24 hrs)</h3>
+              <p class="mt-3 text-slate-600">Licensed pediatricians review your case asynchronously and issue a personalized, clinically appropriate plan.</p>
+            </article>
+            <article class="interactive-card rounded-3xl bg-white p-7 shadow-soft">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brandTeal/10 font-bold text-brandTeal">3</span>
+              <h3 class="mt-4 h3-size heading-track font-bold">Relief Delivered Monthly</h3>
+              <p class="mt-3 text-slate-600">Compounded creams and plan essentials ship to your door with refill cadence matched to your baby’s progress.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why On-H -->
+    <section class="reveal py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track text-center font-extrabold">Why Families Choose On-H</h2>
+        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">🩺</p><h3 class="mt-3 text-xl font-bold">Prescribed by Pediatricians</h3><p class="mt-2 text-slate-600">Every treatment starts with pediatric clinical review.</p></div>
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">🧴</p><h3 class="mt-3 text-xl font-bold">Premium Compounded Creams</h3><p class="mt-2 text-slate-600">Made-to-order formulations for infant-sensitive skin.</p></div>
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">✈️</p><h3 class="mt-3 text-xl font-bold">Free Worldwide Shipping</h3><p class="mt-2 text-slate-600">Reliable delivery from Addis Ababa to global families.</p></div>
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">💸</p><h3 class="mt-3 text-xl font-bold">30-Day Money-Back</h3><p class="mt-2 text-slate-600">Start confidently with our satisfaction guarantee.</p></div>
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">💬</p><h3 class="mt-3 text-xl font-bold">24/7 Parent Support</h3><p class="mt-2 text-slate-600">Questions answered any time through secure messaging.</p></div>
+          <div class="interactive-card rounded-2xl border border-slate-100 p-6 shadow-soft"><p class="text-2xl">🛏️</p><h3 class="mt-3 text-xl font-bold">Custom Crib Offers</h3><p class="mt-2 text-slate-600">Members unlock exclusive nursery essentials pricing.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Product -->
+    <section class="reveal py-20 bg-brandBg">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-10 rounded-3xl bg-white p-8 shadow-soft lg:grid-cols-2">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&w=900&q=60" alt="Compounded diaper rash cream jar" class="interactive-card w-full rounded-2xl object-cover">
+          <div>
+            <p class="font-medium text-brandTeal">Featured Pediatric Formula</p>
+            <h2 class="mt-2 h2-size heading-track font-extrabold">Compounded Triple-Paste Diaper Rash Cream</h2>
+            <ul class="mt-6 space-y-2 text-slate-700">
+              <li>• Zinc oxide barrier support</li>
+              <li>• Cholestyramine for persistent irritation</li>
+              <li>• Nystatin antifungal support when indicated</li>
+            </ul>
+            <p class="mt-6 text-3xl font-extrabold text-brandNavy">Only <span id="priceReveal" class="text-brandTeal">$29</span> per jar <span class="text-lg font-medium text-slate-600">(Ships in 48 hrs)</span></p>
+            <button class="interactive-btn mt-6 rounded-xl bg-brandTeal px-6 py-3 text-white font-medium">Include in Plan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="reveal py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track text-center font-extrabold">Parents Love the Results</h2>
+
+        <div class="swiper mt-10" aria-label="Testimonials carousel">
+          <div class="swiper-wrapper pb-10">
+            <article class="swiper-slide interactive-card rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
+              <div class="flex items-center gap-3"><img loading="lazy" class="h-12 w-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=60" alt="Parent profile photo"><div><p class="font-semibold">Sara M.</p><p class="text-yellow-500">★★★★★</p></div></div>
+              <p class="mt-4 text-slate-700">"Our newborn’s rash improved in three days. The pediatric photo review felt instant and incredibly reassuring."</p>
+            </article>
+            <article class="swiper-slide interactive-card rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
+              <div class="flex items-center gap-3"><img loading="lazy" class="h-12 w-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=100&q=60" alt="Parent profile photo"><div><p class="font-semibold">Daniel K.</p><p class="text-yellow-500">★★★★★</p></div></div>
+              <p class="mt-4 text-slate-700">"The monthly plan is seamless. No pharmacy runs, no guessing, just clear medical guidance for our baby."</p>
+            </article>
+            <article class="swiper-slide interactive-card rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
+              <div class="flex items-center gap-3"><img loading="lazy" class="h-12 w-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1542204625-de2939b7ef71?auto=format&fit=crop&w=100&q=60" alt="Parent profile photo"><div><p class="font-semibold">Hana T.</p><p class="text-yellow-500">★★★★★</p></div></div>
+              <p class="mt-4 text-slate-700">"On-H feels premium and genuinely clinical. Support was kind, fast, and tailored to our infant’s skin."</p>
+            </article>
+          </div>
+          <div class="flex justify-center gap-3">
+            <button class="swiper-button-prev !static !m-0 rounded-full border border-slate-200 px-4 py-2 text-sm !text-brandNavy after:!text-sm after:!content-['prev']"></button>
+            <button class="swiper-button-next !static !m-0 rounded-full border border-slate-200 px-4 py-2 text-sm !text-brandNavy after:!text-sm after:!content-['next']"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="plans" class="reveal bg-brandBg py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track text-center font-extrabold">Our Plans</h2>
+        <div class="mt-12 grid gap-6 lg:grid-cols-3">
+          <article class="interactive-card rounded-3xl bg-white p-7 shadow-soft">
+            <h3 class="h3-size font-bold">Basic</h3>
+            <p class="mt-3 text-4xl font-extrabold"><span class="plan-price" data-target="99">0</span><span class="text-xl">/mo</span></p>
+            <ul class="mt-5 space-y-2 text-slate-600"><li>• Monthly cream refill</li><li>• Pediatric telehealth review</li><li>• Care progress tracking</li></ul>
+            <button class="interactive-btn mt-6 w-full rounded-xl border border-brandTeal px-5 py-3 font-medium text-brandTeal">Join Now</button>
+          </article>
+
+          <article class="interactive-card relative rounded-3xl bg-brandNavy p-7 text-white shadow-lift">
+            <span class="absolute -top-3 right-6 rounded-full bg-brandBlue px-4 py-1 text-xs font-bold uppercase tracking-wide animate-pulse">Most Popular</span>
+            <h3 class="h3-size font-bold">Premium</h3>
+            <p class="mt-3 text-4xl font-extrabold"><span class="plan-price" data-target="149">0</span><span class="text-xl">/mo</span></p>
+            <ul class="mt-5 space-y-2 text-slate-200"><li>• Everything in Basic</li><li>• Free hypoallergenic formula sample</li><li>• Priority refill logistics</li></ul>
+            <button class="interactive-btn mt-6 w-full rounded-xl bg-brandTeal px-5 py-3 font-medium text-white">Join Now</button>
+          </article>
+
+          <article class="interactive-card rounded-3xl bg-white p-7 shadow-soft">
+            <h3 class="h3-size font-bold">Family</h3>
+            <p class="mt-3 text-4xl font-extrabold"><span class="plan-price" data-target="199">0</span><span class="text-xl">/mo</span></p>
+            <ul class="mt-5 space-y-2 text-slate-600"><li>• Everything in Premium</li><li>• Priority 12hr pediatric review</li><li>• Concierge care coordination</li></ul>
+            <button class="interactive-btn mt-6 w-full rounded-xl border border-brandTeal px-5 py-3 font-medium text-brandTeal">Join Now</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Master Box Upsell -->
+    <section class="reveal py-20" id="pediatricians">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-8 rounded-3xl bg-gradient-to-r from-brandTeal/10 to-brandBlue/10 p-8 lg:grid-cols-2">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=900&q=60" alt="Smart crib and nursery equipment" class="interactive-card rounded-2xl shadow-soft">
+          <div>
+            <h2 class="h2-size heading-track font-extrabold">Member-Only Nursery Gear Access</h2>
+            <p class="mt-4 body-lg text-slate-700">As a member, unlock exclusive member pricing on top baby gear — from smart cribs to nursery bundles.</p>
+            <button class="interactive-btn mt-6 rounded-xl bg-brandTeal px-6 py-3 font-medium text-white">Upgrade Your Plan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="reveal py-20 bg-white">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track text-center font-extrabold">Frequently Asked Questions</h2>
+        <div class="mt-10 space-y-4" id="faqList">
+          <div class="rounded-2xl border border-slate-200 p-4">
+            <button class="faq-toggle flex w-full items-center justify-between text-left text-lg font-semibold">Is this safe for newborns?<span>+</span></button>
+            <div class="faq-panel"><p class="pt-3 text-slate-600">Yes. On-H is designed specifically for infants 0–12 months and all prescription decisions are made by licensed pediatric clinicians.</p></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 p-4">
+            <button class="faq-toggle flex w-full items-center justify-between text-left text-lg font-semibold">How do returns work?<span>+</span></button>
+            <div class="faq-panel"><p class="pt-3 text-slate-600">If you are not satisfied in your first 30 days, contact support for a full plan refund under our money-back promise.</p></div>
+          </div>
+          <div class="rounded-2xl border border-slate-200 p-4">
+            <button class="faq-toggle flex w-full items-center justify-between text-left text-lg font-semibold">What if I have urgent questions?<span>+</span></button>
+            <div class="faq-panel"><p class="pt-3 text-slate-600">Use your member portal for continuous messaging support. For emergencies, seek local in-person emergency care immediately.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="reveal bg-gradient-to-r from-brandTeal/15 to-brandBlue/15 py-20">
+      <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 class="h2-size heading-track font-extrabold">Ready to Nurture with Confidence?</h2>
+        <p class="mx-auto mt-4 max-w-2xl body-lg text-slate-700">Start your newborn care plan in under a minute and receive pediatric-guided recommendations within 24 hours.</p>
+        <button class="interactive-btn mt-8 rounded-2xl bg-brandTeal px-8 py-4 text-[1.125rem] font-medium text-white">Start Your 60-Second Quiz – Pre-order Now</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-brandNavy py-16 text-slate-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-10 md:grid-cols-4">
+        <div>
+          <p class="text-2xl font-extrabold text-white">On-<span class="text-brandTeal">H</span></p>
+          <p class="mt-4 text-sm">Premium newborn telehealth and monthly care delivery for families worldwide.</p>
+        </div>
+        <div><h3 class="font-semibold text-white">Products</h3><ul class="mt-3 space-y-2 text-sm"><li><a href="#" class="hover:text-white">Care Plans</a></li><li><a href="#" class="hover:text-white">Compounded Creams</a></li><li><a href="#" class="hover:text-white">Formula Support</a></li></ul></div>
+        <div><h3 class="font-semibold text-white">Company</h3><ul class="mt-3 space-y-2 text-sm"><li><a href="#" class="hover:text-white">About</a></li><li><a href="#" class="hover:text-white">For Pediatricians</a></li><li><a href="#" class="hover:text-white">Blog</a></li></ul></div>
+        <div><h3 class="font-semibold text-white">Support & Legal</h3><ul class="mt-3 space-y-2 text-sm"><li><a href="#" class="hover:text-white">Contact</a></li><li><a href="#" class="hover:text-white">Privacy</a></li><li><a href="#" class="hover:text-white">Terms</a></li></ul></div>
+      </div>
+      <div class="mt-10 border-t border-slate-700 pt-6 text-sm">
+        <p class="flex items-center gap-2">Proudly crafted in Addis Ababa, Ethiopia
+          <span aria-label="Ethiopia flag" class="inline-flex h-4 w-6 overflow-hidden rounded-sm border border-slate-500 align-middle"><span class="w-1/3 bg-[#078930]"></span><span class="w-1/3 bg-[#FCD116]"></span><span class="w-1/3 bg-[#DA121A]"></span></span>
+        </p>
+        <p class="mt-3 text-xs text-slate-400">Prescriptions provided by licensed pediatricians via partner telehealth. Not a replacement for in-person care.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileMenu.style.maxHeight && mobileMenu.style.maxHeight !== '0px';
+      mobileMenu.style.maxHeight = open ? '0px' : mobileMenu.scrollHeight + 'px';
+      menuBtn.setAttribute('aria-expanded', String(!open));
+    });
+
+    const navWrap = document.getElementById('navWrap');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      navWrap.classList.toggle('bg-white', y > 30);
+      navWrap.classList.toggle('shadow-soft', y > 30);
+      navWrap.classList.toggle('mt-4', y < 30);
+      navWrap.classList.toggle('mt-2', y >= 30);
+      document.querySelector('.parallax-layer')?.style.setProperty('--parallax', `${Math.min(y * 0.12, 60)}px`);
+    }, { passive: true });
+
+    const headlineText = 'Medical-Grade Newborn Care. Delivered Monthly.';
+    const heroHeadline = document.getElementById('heroHeadline');
+    headlineText.split(' ').forEach((word, i) => {
+      const span = document.createElement('span');
+      span.className = 'hero-word mr-3';
+      span.textContent = word;
+      heroHeadline.appendChild(span);
+      setTimeout(() => span.classList.add('in'), 120 * i + 100);
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          if (entry.target.id === 'how') document.getElementById('flowLine')?.classList.add('active');
+        }
+      });
+    }, { threshold: 0.18 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const particles = document.getElementById('particles');
+    for (let i = 0; i < 16; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'float-dot';
+      const size = 6 + Math.random() * 16;
+      dot.style.width = `${size}px`;
+      dot.style.height = `${size}px`;
+      dot.style.left = `${Math.random() * 100}%`;
+      dot.style.top = `${50 + Math.random() * 50}%`;
+      dot.style.animationDuration = `${12 + Math.random() * 12}s`;
+      dot.style.animationDelay = `${-Math.random() * 10}s`;
+      particles.appendChild(dot);
+    }
+
+    new Swiper('.swiper', {
+      loop: true,
+      autoplay: { delay: 3200, disableOnInteraction: false },
+      speed: 800,
+      spaceBetween: 20,
+      slidesPerView: 1,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      breakpoints: {
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 }
+      }
+    });
+
+    const animateValue = (el, target, dur = 1200) => {
+      let start = 0;
+      const step = Math.ceil(target / (dur / 16));
+      const tick = () => {
+        start += step;
+        if (start >= target) {
+          el.textContent = `$${target}`;
+          return;
+        }
+        el.textContent = `$${start}`;
+        requestAnimationFrame(tick);
+      };
+      tick();
+    };
+
+    const planObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          animateValue(el, Number(el.dataset.target));
+          obs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.plan-price').forEach(el => planObserver.observe(el));
+
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    faqToggles.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel = btn.nextElementSibling;
+        const open = panel.style.maxHeight && panel.style.maxHeight !== '0px';
+        document.querySelectorAll('.faq-panel').forEach(p => {
+          p.style.maxHeight = '0px';
+          p.classList.remove('open');
+          p.previousElementSibling.querySelector('span').textContent = '+';
+        });
+        if (!open) {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          panel.classList.add('open');
+          btn.querySelector('span').textContent = '−';
+        }
+      });
+    });
+
+    const price = document.getElementById('priceReveal');
+    setTimeout(() => {
+      price.classList.add('animate-pulse');
+      setTimeout(() => price.classList.remove('animate-pulse'), 1400);
+    }, 800);
+  </script>
+</body>
+</html>
